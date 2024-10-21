@@ -8,52 +8,46 @@ export class RecommendationService {
 
   async getRecommendedMovies(userId: number) {
     try {
-      const data = await this.prisma.user.findUnique({
-        where: { id: userId },
+      // Get movies with their average rating
+      const moviesWithAvgRatings = await this.prisma.movie.findMany({
         include: {
-          ratings: {
-            include: {
-              movie: {
-                include: {
-                  category: {
-                    select: {
-                      name: true, // Assuming `name` is the field for category
-                    },
-                  },
-                },
-              },
-            },
-          },
+          ratings: true,
+          category: true,
         },
       });
 
-      if (data == null) {
-        return {
-          statusCode: 0,
-          message: `Invalid user Id: ${userId}`,
-          data: [],
-        };
-      } else if (data.ratings.length) {
-        const formattedData = data.ratings.map((rating) => ({
-          movieId: rating.movie.id,
-          title: rating.movie.title,
-          description: rating.movie.description,
-          category: rating.movie.category.name,
-          rating: rating.rating,
-        }));
+      console.log(moviesWithAvgRatings)
+
+      // Calculate the average rating for each movie
+      const moviesWithRatings = moviesWithAvgRatings.map((movie) => {
+        const totalRatings = movie.ratings.reduce(
+          (acc, rating) => acc + rating.rating,
+          0,
+        );
+        const avgRating = movie.ratings.length
+          ? totalRatings / movie.ratings.length
+          : 0;
 
         return {
-          statusCode: 1,
-          message: 'Recommended list is ',
-          data: formattedData,
+          movieId: movie.id,
+          title: movie.title,
+          description: movie.description,
+          category: movie.category.name,
+          rating: avgRating,
+          image: movie?.image
         };
-      } else {
-        return {
-          statusCode: 0,
-          message: `No rating found against user Id ${userId}`,
-          data: [],
-        };
-      }
+      });
+
+      // Sort movies by their average rating in descending order
+      const sortedMovies = moviesWithRatings.sort(
+        (a, b) => b.rating - a.rating,
+      );
+
+      return {
+        statusCode: 1,
+        message: 'Recommended list is ',
+        data: sortedMovies.slice(0, 10),
+      };
     } catch (error) {
       return { statusCode: 0, message: 'Error Occured', error: error.message };
     }

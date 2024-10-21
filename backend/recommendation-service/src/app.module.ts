@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { RecommendationModule } from './recommendation/recommendation.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from 'nest-auth-package';
 
 @Module({
   imports: [

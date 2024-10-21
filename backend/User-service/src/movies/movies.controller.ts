@@ -1,5 +1,5 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guard';
+import { JwtGuard } from 'nest-auth-package';
 import { MoviesService } from './movies.service';
 
 @UseGuards(JwtGuard)

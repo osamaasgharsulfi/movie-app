@@ -42,6 +42,7 @@ model Movie {
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
   ratings    Rating[]
+  image String?
 }
 
 model Rating {

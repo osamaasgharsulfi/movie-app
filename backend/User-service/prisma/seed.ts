@@ -19,10 +19,10 @@ async function main() {
   // Movies List
   const movies = await prisma.movie.createMany({
     data: [
-      { title: 'Die Hard', description: 'Action movie', categoryId: 5 },
-      { title: 'The Conjuring', description: 'Horror movie', categoryId: 2 },
-      { title: 'The Hangover', description: 'Comedy movie', categoryId: 3 },
-      { title: 'Toy Story', description: 'Animated movie', categoryId: 4 },
+      { title: 'Die Hard', description: 'Action movie', categoryId: 5, image: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSo4rynrhfsiBKcV57MBiwg66Nk91gp2OtOWsGMQzkOeAbBByN3' },
+      { title: 'The Conjuring', description: 'Horror movie', categoryId: 2, image : 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTTom_YFyhdPL_hw7a4QxB75uy9RNUGdRIDqieXM_1vm29zo0Id' },
+      { title: 'The Hangover', description: 'Comedy movie', categoryId: 3, image: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRWuhUtUEH-YWbeUfEEkJ3FmgrM9wJfo0DBtdR_tqvLNPXn7KNu' },
+      { title: 'Toy Story', description: 'Animated movie', categoryId: 4, image: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ3I1sd7LSAioEZqY-ildb4OvNHvbc7QkxS5sOvQB_PUQfhZJz2' },
     ],
   });
 

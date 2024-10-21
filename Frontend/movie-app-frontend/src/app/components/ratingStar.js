@@ -1,18 +1,17 @@
 
 import axios from "@/app/utils/axios";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
-
-const RatingStars = ({ movieId }) => {
+import { toast } from 'react-toastify';
+const RatingStars = ({ movieId, ratingOfMovie }) => {
   const router = useRouter();
   const [hover, setHover] = useState(null);
-  const [ratingValue, setRatingValue] = useState(null); // Corrected rating state name
+  const [ratingValue, setRatingValue] = useState(ratingOfMovie);
 
   const giveRating = async (value) => {
     try {
 
-      setRatingValue(value);
 
       let data = {
         movieId: parseInt(movieId),
@@ -20,19 +19,23 @@ const RatingStars = ({ movieId }) => {
       };
       const response = await axios.post("/rating/rateMovie", data);
 
+      toast.success(response?.data?.message)
+      if (response.data.statusCode == 0) {
+        return
+      }
+      setRatingValue(value);
 
-     
-      alert(response?.data?.message);
+      // alert(response?.data?.message);
 
-     
+
     } catch (error) {
       console.error("Error submitting rating:", error);
       alert("An error occurred while submitting the rating");
     }
   };
-  
-   const handleBackClick = () => {
-    router.push("/dashboard/home"); 
+
+  const handleBackClick = () => {
+    router.push("/dashboard/home");
   };
 
   return (
@@ -48,8 +51,8 @@ const RatingStars = ({ movieId }) => {
               type="radio"
               name="rating"
               value={currentRating}
-              onClick={() => giveRating(currentRating)} // Call giveRating with the selected value
-              style={{ display: "none" }} // Hide the actual radio button
+              onClick={() => giveRating(currentRating)}
+              style={{ display: "none" }}
             />
 
             {/* Star icon */}
@@ -58,16 +61,16 @@ const RatingStars = ({ movieId }) => {
               color={
                 currentRating <= (hover || ratingValue) ? "#ffc107" : "#e4e5e9"
               }
-              onMouseEnter={() => setHover(currentRating)} // Highlight the star on hover
-              onMouseLeave={() => setHover(null)} // Reset the highlight when not hovering
-              style={{ cursor: "pointer" }} // Add a pointer cursor for better UX
+              onMouseEnter={() => setHover(currentRating)}
+              onMouseLeave={() => setHover(null)}
+              style={{ cursor: "pointer" }}
             />
           </label>
         );
       })}
-       <button 
-        onClick={handleBackClick} 
-        style={backButtonStyle} // Apply custom styling to the button
+      <button
+        onClick={handleBackClick}
+        style={backButtonStyle}
       >
         Back to Home
       </button>

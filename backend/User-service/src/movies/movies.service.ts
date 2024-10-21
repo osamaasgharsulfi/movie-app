@@ -7,10 +7,23 @@ export class MoviesService {
 
   async getAllMoviesWithCategories() {
     try {
-      const data = await this.prisma.movie.findMany({
+      const query = await this.prisma.movie.findMany({
         include: {
           category: true, // Include the associated category
+          ratings: true,
         },
+      });
+
+      const data = query.map((d) => {
+        return {
+          id: d.id,
+          title: d?.title,
+          description: d?.description,
+          categoryId: d?.categoryId,
+          category: d?.category?.name,
+          Movierating: d?.ratings[0]?.rating || null,
+          image: d?.image
+        };
       });
 
       if (data.length > 0) {
@@ -26,12 +39,14 @@ export class MoviesService {
   async getMovieById(movieId: number) {
     try {
       const data = await this.prisma.movie.findUnique({
-        where: { id: movieId }, 
+        where: { id: movieId },
         include: {
-          category: true, 
+          category: true,
+          ratings: true
         },
       });
-  
+
+
       if (data) {
         return { statusCode: 1, message: 'success', data };
       } else {
@@ -45,5 +60,4 @@ export class MoviesService {
       return { statusCode: 0, message: 'Error Occurred', error: error.message };
     }
   }
-  
 }

@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import axios from "@/app/utils/axios";
 import styles from "@/app/Styles/auth.module.css";
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 export default function Signup() {
   const {
@@ -38,7 +39,7 @@ export default function Signup() {
       reset();
       // Redirect to the login page
       router.push("/auth/login");
-      alert("Signup successful! Please login.");
+      toast.success("Signup successful! Please login.");
     } catch (error) {
       console.error("Signup failed", error);
       if (error.response && error.response.status === 403) {
@@ -48,7 +49,7 @@ export default function Signup() {
           message: "Email is already taken",
         });
       } else {
-        alert("Signup failed. Please try again.");
+        toast.error("Signup failed. Please try again.");
       }
     }
   };

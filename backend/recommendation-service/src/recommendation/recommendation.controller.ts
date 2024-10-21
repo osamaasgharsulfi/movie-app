@@ -1,7 +1,7 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { RecommendationService } from './recommendation.service';
-import { GetUser } from '../auth/decorator/get-user.decorator';
-import { JwtGuard } from 'src/auth/guard';
+import { GetUser } from './decorator/get-user.decorator';
+import { JwtGuard } from 'nest-auth-package';
 
 @UseGuards(JwtGuard)
 @Controller('recommendation')

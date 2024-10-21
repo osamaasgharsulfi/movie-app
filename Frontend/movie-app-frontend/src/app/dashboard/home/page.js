@@ -7,12 +7,13 @@ import { AiOutlineUser } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import withAuth from "@/app/utils/withAuth";
 import Modal from "react-modal";
+import { toast } from 'react-toastify';
 export default withAuth(function Dashboard() {
   const [movies, setMovies] = useState([]);
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [username, setUsername] = useState("");
   const router = useRouter(); // Initialize router
-
+  const [imageUrl, setImageUrl] = useState('');
   useEffect(() => {
     // Fetch movies list from your API
     const fetchMovies = async () => {
@@ -58,11 +59,25 @@ export default withAuth(function Dashboard() {
     fetchMovies();
     fetchRecommendedMovies();
   }, []);
+  useEffect(() => {
+    axios
+      .get('https://random.imagecdn.app/500/150')
+      .then(response => {
+        setImageUrl(response.config.url); // URL of the random image
+        console.log("images", response.config.url);
 
+      })
+
+      .catch(error => {
+        console.error('Error fetching random image:', error);
+      });
+  }, []);
   // Logout function
   const handleLogout = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("token");
+    toast.success("User logout successfully")
+
     router.push("/auth/login"); // Redirect to login page after logout
   };
 
@@ -82,6 +97,8 @@ export default withAuth(function Dashboard() {
     image: localStorage.getItem("image"),
     dob: formattedDate,
   });
+
+
 
   // Open and close modal handlers
   const openModal = () => setModalIsOpen(true);
@@ -143,9 +160,13 @@ export default withAuth(function Dashboard() {
         localStorage.setItem("username", response?.data?.data?.name);
         localStorage.setItem("dob", response?.data?.data?.dob);
         localStorage.setItem("image", response?.data?.data?.image);
-        alert(response?.data?.message);
+        // alert(response?.data?.message);
+        toast.success(response?.data?.message)
+
       } else {
-        alert(response?.data?.message);
+        // alert(response?.data?.message);
+        toast.success(response?.data?.message)
+
       }
 
       // Close the modal after successful update
@@ -240,19 +261,28 @@ export default withAuth(function Dashboard() {
       </Modal>
 
       <section className={styles.moviesSection}>
+
         <h2 className={styles.sectionTitle}>Movies List</h2>
+
         <ul className={styles.movieList}>
-          {movies.map((movie) => (
+
+          {movies.map((movie, index) => (
             <li
               key={movie.id}
               className={styles.movieItem}
               onClick={() => handleMovieClick(movie.id)}
             >
               <h3>{movie.title}</h3>
+              <img src={movie?.image} alt="Random Kitten"  style={{width:"200px",height:"200px"}} />
+
               <p>{movie.description}</p>
               <span className={styles.category}>
-                Category: {movie.category.name}
+                Category: {movie.category}
               </span>
+              {movie.Movierating != null &&
+                <p>Rating: {" "}
+                  {movie.Movierating} out of 5</p>
+              }
             </li>
           ))}
         </ul>
@@ -265,10 +295,16 @@ export default withAuth(function Dashboard() {
             recommendedMovies.map((movie) => (
               <li key={movie.id} className={styles.recommendedItem}>
                 <h3>{movie.title}</h3>
+              <img src={movie?.image} alt="Random Kitten" style={{width:"200px",height:"200px"}} />
+
                 <p>{movie.description}</p>
                 <span className={styles.category}>
                   Category: {movie.category}
                 </span>
+                {movie.rating != 0 &&
+                  <p>Rating: {" "}
+                    {movie.rating} out of 5</p>
+                }
               </li>
             ))
           ) : (

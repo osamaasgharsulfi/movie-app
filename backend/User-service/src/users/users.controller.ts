@@ -10,7 +10,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { GetUser } from 'src/auth/decorator';
-import { JwtGuard } from 'src/auth/guard';
+import { JwtGuard } from 'nest-auth-package';
 import { UserService } from './users.service';
 import { UpdateUserProfileDto } from './dto';
 

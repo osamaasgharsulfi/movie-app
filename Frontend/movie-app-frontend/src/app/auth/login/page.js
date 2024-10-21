@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import axios from "@/app/utils/axios";
 import styles from "@/app/Styles/auth.module.css";
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 export default function Login() {
   const {
@@ -23,20 +24,21 @@ export default function Login() {
       localStorage.setItem("username", res?.data?.data?.name);
       localStorage.setItem("dob", res?.data?.data?.dob);
       localStorage.setItem("image", res?.data?.data?.image);
+      toast.success("Login successful!")
 
-      alert("Login successful!");
+      // alert("Login successful!");
 
       router.push("/dashboard/home");
     } catch (error) {
       console.error("Login failed", error);
       // Check if the error response exists
       if (error.response) {
-        alert(
+        toast.error(
           "Login failed: " +
             (error.response.data.message || "Please try again.")
         ); // Provide more specific feedback
       } else {
-        alert("Login failed. Please try again.");
+        toast.error("Login failed. Please try again.");
       }
     }
   };
